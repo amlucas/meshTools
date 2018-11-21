@@ -11,7 +11,8 @@ parser.add_argument('--pitch', type=float, default = 2.5)
 parser.add_argument('--height', type=float, default = 5.0)
 parser.add_argument('--nsegments', type=float, default = 32)
 parser.add_argument('--radius', type=float, default = 1.0)
-parser.add_argument('--smallRadius', type=float, default = 0.5)
+parser.add_argument('--smallRadiusStart', type=float, default = 0.5)
+parser.add_argument('--smallRadiusEnd', type=float, default = 0.5)
 
 args = parser.parse_args()
 
@@ -20,7 +21,8 @@ n = args.nsegments
 L = args.height
 R = args.radius
 
-R0 = args.smallRadius
+RStart = args.smallRadiusStart
+REnd = args.smallRadiusEnd
 
 z = np.linspace(-L/2, L/2, n)
 theta = z * (2 * np.pi / args.pitch)
@@ -36,7 +38,8 @@ inflator = pymesh.wires.Inflator(wire_network)
 
 inflator.set_profile(6)
 inflator.set_refinement(2, "loop")
-inflator.inflate(R0, per_vertex_thickness=True)
+thickness = np.arange(wire_network.num_vertices) /  wire_network.num_vertices * (REnd-RStart) + RStart
+inflator.inflate(thickness, per_vertex_thickness=True)
 
 mesh = inflator.mesh
 mesh = fix_mesh(mesh, "low")
