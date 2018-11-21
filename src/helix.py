@@ -44,7 +44,7 @@ if __name__ == '__main__':
     args = parse_args()
     mesh = create_helix(args.nL, args.height, args.radius, args.pitch,
                         args.nR, args.smallRadiusStart, args.smallRadiusEnd)
-                        
+    
     mesh = fix_mesh(mesh, "low")
 
     pymesh.save_mesh(args.out, mesh)
