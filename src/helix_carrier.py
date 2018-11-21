@@ -10,14 +10,14 @@ def parse_args():
 
     parser.add_argument('--out', help='output file name', type=str)
     parser.add_argument('--pitch', type=float, default = 2.5)
-    parser.add_argument('--height', type=float, default = 5.0)
+    parser.add_argument('--height', type=float, default = 10.0)
     parser.add_argument('--nL', type=float, default = 64)
     parser.add_argument('--nR', type=float, default = 6)
     parser.add_argument('--radius', type=float, default = 1.0)
-    parser.add_argument('--smallRadiusStart', type=float, default = 0.5)
-    parser.add_argument('--smallRadiusEnd', type=float, default = 0.5)
+    parser.add_argument('--smallRadiusStart', type=float, default = 0.7)
+    parser.add_argument('--smallRadiusEnd', type=float, default = 0.7)
 
-    parser.add_argument('--sphereRadius', type=float, default = 2.0)
+    parser.add_argument('--sphereRadius', type=float, default = 1.5)
 
     return parser.parse_args()
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     R = args.sphereRadius
     H = args.height
-    Smesh =  pymesh.generate_icosphere(R, [0.0, 0.0, H/2 + R * 0.7], refinement_order=2)
+    Smesh =  pymesh.generate_icosphere(R, [0.0, 0.0, H/2], refinement_order=2)
 
     mesh = pymesh.boolean(Hmesh, Smesh,
                           operation="union",
