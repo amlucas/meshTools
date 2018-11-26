@@ -23,8 +23,8 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    Hmesh = create_helix(args.nL, args.height, args.radius, args.pitch,
-                        args.nR, args.smallRadiusStart, args.smallRadiusEnd)
+    Hmesh, _ = create_helix(args.nL, args.height, args.radius, args.pitch,
+                            args.nR, args.smallRadiusStart, args.smallRadiusEnd)
 
     R = args.sphereRadius
     H = args.height
