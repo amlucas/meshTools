@@ -2,7 +2,7 @@
 
 import pymesh, argparse
 
-def create_helix(L, nL, R, pitch, dr, dtheta):
+def create_helix(L, R, pitch, dr, dtheta):
     from box import create_box_simple
     import numpy as np
 
@@ -21,8 +21,7 @@ def create_helix(L, nL, R, pitch, dr, dtheta):
 
     vertices = mesh.vertices
     
-    phi   = np.arctan2(pitch / 2 * np.pi, R)
-
+    phi = -np.arctan2(pitch / 2 * np.pi, R)
     theta = vertices[:,2] * (2 * np.pi / pitch)
 
     # orientation step: orient the box along the helix
@@ -55,14 +54,14 @@ def create_helix(L, nL, R, pitch, dr, dtheta):
     z += zg-zt
     
     vertices = np.transpose(np.vstack((x,y,z)))
-    return pymesh.form_mesh(vertices, mesh.faces)
+    bones = np.transpose(np.vstack((xg,yg,zg)))
+    return pymesh.form_mesh(vertices, mesh.faces), bones
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Create a helicoidal triangle mesh from recatngle shape')
 
     parser.add_argument('--out', help='output file name', type=str, required=True)
     parser.add_argument('--pitch', type=float, default = 2.5)
-    parser.add_argument('--nL', type=int, default = 32)
     parser.add_argument('--height', type=float, default = 5.0)
     parser.add_argument('--radius', type=float, default = 1.0)
     parser.add_argument('--rect_sizes', type=float, nargs=2, default = [0.1, 0.5])
@@ -72,12 +71,12 @@ def parse_args():
 if __name__ == '__main__':
     from fix_mesh import fix_mesh_target_length
     args = parse_args()
-    mesh = create_helix(args.height, args.nL, args.radius, args.pitch,
-                        args.rect_sizes[0], args.rect_sizes[1])
+    mesh, __ = create_helix(args.height, args.radius, args.pitch,
+                            args.rect_sizes[0], args.rect_sizes[1])
     
 
     target_len = min(args.rect_sizes) * 0.6
-    mesh = fix_mesh_target_length(mesh, target_len)
+    #mesh = fix_mesh_target_length(mesh, target_len)
     #mesh = fix_mesh(mesh, "low")
 
     pymesh.save_mesh(args.out, mesh)

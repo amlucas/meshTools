@@ -3,28 +3,25 @@
 import pymesh, argparse
 import numpy as np
 import fix_mesh as FM
-from circ_helix import create_helix
+from rect_helix import create_helix
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Create a sphere with circular-section helix')
+    parser = argparse.ArgumentParser(description='Create a sphere with rectangular-section helix')
 
     parser.add_argument('--out', help='output file name', type=str, required=True)
     parser.add_argument('--pitch', type=float, default = 2.5)
     parser.add_argument('--height', type=float, default = 10.0)
-    parser.add_argument('--nL', type=float, default = 64)
-    parser.add_argument('--nR', type=float, default = 6)
     parser.add_argument('--radius', type=float, default = 1.0)
-    parser.add_argument('--smallRadiusStart', type=float, default = 0.7)
-    parser.add_argument('--smallRadiusEnd', type=float, default = 0.7)
-
+    parser.add_argument('--rect_sizes', type=float, nargs=2, default = [0.3, 0.7])
+    
     parser.add_argument('--sphereRadius', type=float, default = 1.5)
 
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
-    Hmesh, _ = create_helix(args.nL, args.height, args.radius, args.pitch,
-                            args.nR, args.smallRadiusStart, args.smallRadiusEnd)
+    Hmesh, _ = create_helix(args.height, args.radius, args.pitch,
+                            args.rect_sizes[0], args.rect_sizes[1])
 
     R = args.sphereRadius
     H = args.height
@@ -34,7 +31,7 @@ if __name__ == '__main__':
                           operation="union",
                           engine="igl")
 
-    mesh = pymesh.subdivide(mesh, order=2, method="loop")
+    mesh = pymesh.subdivide(mesh, order=2, method="simple")
     #mesh = FM.fix_mesh(mesh, "low")
     mesh = FM.fix_mesh_target_length(mesh, 0.1)
 

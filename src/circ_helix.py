@@ -24,7 +24,7 @@ def create_helix(nL, L, R, pitch, nR, RStart, REnd):
 
     mesh = inflator.mesh
 
-    return mesh, wire_network
+    return mesh, vertices
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Create a helicoidal triangle mesh')

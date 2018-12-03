@@ -32,8 +32,8 @@ if __name__ == '__main__':
                                       box_max =  0.5 * rect,
                                       subdiv_order=1)
 
-    rcenter = bones.vertices[-2]
-    rorient = rcenter - bones.vertices[-3]
+    rcenter = bones[-2]
+    rorient = rcenter - bones[-3]
     
     q = pymesh.Quaternion.fromData([0, 1, 0], rorient)
     q.normalize()
