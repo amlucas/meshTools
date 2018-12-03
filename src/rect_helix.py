@@ -2,8 +2,6 @@
 
 import pymesh, argparse
 
-from fix_mesh import fix_mesh
-
 def create_helix(L, nL, R, pitch, dr, dtheta):
     from box import create_box_simple
     import numpy as np
@@ -72,10 +70,14 @@ def parse_args():
     return parser.parse_args()
 
 if __name__ == '__main__':
+    from fix_mesh import fix_mesh_target_length
     args = parse_args()
     mesh = create_helix(args.height, args.nL, args.radius, args.pitch,
                         args.rect_sizes[0], args.rect_sizes[1])
     
-    mesh = fix_mesh(mesh, "normal")
+
+    target_len = min(args.rect_sizes) * 0.6
+    mesh = fix_mesh_target_length(mesh, target_len)
+    #mesh = fix_mesh(mesh, "low")
 
     pymesh.save_mesh(args.out, mesh)
