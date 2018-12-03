@@ -3,7 +3,7 @@
 import pymesh, argparse
 import numpy as np
 import fix_mesh as FM
-from helix import create_helix
+from circ_helix import create_helix
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Create a helicoidal triangle mesh')
