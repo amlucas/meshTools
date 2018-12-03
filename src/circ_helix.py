@@ -29,7 +29,7 @@ def create_helix(nL, L, R, pitch, nR, RStart, REnd):
 def parse_args():
     parser = argparse.ArgumentParser(description='Create a helicoidal triangle mesh')
 
-    parser.add_argument('--out', help='output file name', type=str)
+    parser.add_argument('--out', help='output file name', type=str, required=True)
     parser.add_argument('--pitch', type=float, default = 2.5)
     parser.add_argument('--height', type=float, default = 5.0)
     parser.add_argument('--nL', type=float, default = 32)
