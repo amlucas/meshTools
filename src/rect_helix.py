@@ -8,8 +8,8 @@ def create_helix(L, nL, R, pitch, dr, dtheta):
     from box import create_box_simple
     import numpy as np
 
-    box_min = [R-dr/2, -dtheta/2, -L/2]
-    box_max = [R+dr/2,  dtheta/2,  L/2]
+    box_min = [-dr/2, -dtheta/2, -L/2]
+    box_max = [dr/2,  dtheta/2,  L/2]
 
     mesh = create_box_simple(box_min, box_max)
 
@@ -22,13 +22,41 @@ def create_helix(L, nL, R, pitch, dr, dtheta):
         mesh, __ = pymesh.collapse_short_edges(mesh, tol, preserve_feature=True)
 
     vertices = mesh.vertices
-    z = vertices[:,2]
-    theta = z * (2 * np.pi / pitch)
+    
+    phi   = np.arctan2(pitch / 2 * np.pi, R)
 
-    x = np.cos(theta) * vertices[:,0] - np.sin(theta) * vertices[:,1]
-    y = np.sin(theta) * vertices[:,0] + np.cos(theta) * vertices[:,1]
+    theta = vertices[:,2] * (2 * np.pi / pitch)
 
-    vertices = np.transpose(np.vstack((x,y,z)))    
+    # orientation step: orient the box along the helix
+    xp = vertices[:,0]
+    yp = np.cos(phi) * vertices[:,1] - np.sin(phi) * vertices[:,2]
+    zp = np.sin(phi) * vertices[:,1] + np.cos(phi) * vertices[:,2]    
+    
+    x = np.cos(theta) * xp - np.sin(theta) * yp
+    y = np.sin(theta) * xp + np.cos(theta) * yp
+    z = zp
+
+    # guide: how a vertical line is transformed to helix
+    xg = R * np.cos(theta)
+    yg = R * np.sin(theta)
+    zg = 1.0 * vertices[:,2]
+
+    # transformed: how the orientation step transformed the data position (on a vertical line)
+    n = len(vertices[:,0])
+    xp = np.zeros(n)
+    yp = - np.sin(phi) * vertices[:,2]
+    zp = + np.cos(phi) * vertices[:,2]
+
+    xt = np.cos(theta) * xp - np.sin(theta) * yp
+    yt = np.sin(theta) * xp + np.cos(theta) * yp
+    zt = zp
+
+    # adjust position according to the guide
+    x += xg-xt
+    y += yg-yt
+    z += zg-zt
+    
+    vertices = np.transpose(np.vstack((x,y,z)))
     return pymesh.form_mesh(vertices, mesh.faces)
 
 def parse_args():
@@ -48,6 +76,6 @@ if __name__ == '__main__':
     mesh = create_helix(args.height, args.nL, args.radius, args.pitch,
                         args.rect_sizes[0], args.rect_sizes[1])
     
-    #mesh = fix_mesh(mesh, "normal")
+    mesh = fix_mesh(mesh, "normal")
 
     pymesh.save_mesh(args.out, mesh)
