@@ -42,6 +42,7 @@ def parse_args():
     parser.add_argument('--nR', type=int, default = 6)
     parser.add_argument('--radius', type=float, default = 3.0)
     parser.add_argument('--smallRadius', type=float, default = 1.0)
+    parser.add_argument('--smallRadiusRatio', type=float, default = 2.0)
 
     parser.add_argument('--RectangleDims', type=float, nargs=3, default = [0.6, 6.0, 3.0])
 
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     args = parse_args()
 
     alpha = 0.35
-    ratio = 1.7
+    ratio = args.smallRadiusRatio
     
     R = args.radius - args.smallRadius/2
     L = args.height - args.RectangleDims[2] * (1-alpha) - args.smallRadius/2
